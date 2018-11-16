@@ -1,0 +1,60 @@
+<html>
+<head>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-treegrid/0.2.0/css/jquery.treegrid.min.css">
+</head>
+<div style="height: 510px;width:100%;overflow-y:scroll;">
+    <table id="table" style="width: 100%;">
+    </table>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.12.0/extensions/treegrid/bootstrap-table-treegrid.js"></script>
+<script src="https://cdn.bootcss.com/jquery-treegrid/0.2.0/js/jquery.treegrid.min.js"></script>
+<script src="jquery.treegrid.extension.js"></script>
+<script>
+    $table = $('#table').treegridData({
+        id: 'id',
+        parentColumn: 'pid',
+        type: "GET", //请求数据的ajax类型
+        ajaxParams: {}, //请求数据的ajax的data属性
+        expandColumn: null,//在哪一列上面显示展开按钮
+        striped: false,   //是否各行渐变色
+        bordered: true,  //是否显示边框
+        expandAll: false,  //是否全部展开
+        columns: [
+            {
+                title: '名称',
+                field: 'name'
+            },
+            {
+                title: '编号',
+                field: 'id'
+            },
+            {
+                title: '权限值',
+                field: 'permissionValue'
+            }
+        ]
+    });
+    
+    //数据不需要有循序
+    var data = [
+        {"id":1,"pid":0,"name":"用户管理","permissionValue":"open:user:manage","child":"2,3"},
+        {"id":2,"pid":1,"name":"用户添加","permissionValue":"open:user:manage","child":"4"},
+        {"id":3,"pid":1,"name":"用户修改","permissionValue":"open:user:manage"},
+        {"id":4,"pid":2,"name":"添加","permissionValue":"open:user:manage"}
+    ]
+
+    $table.createBody(data);
+
+    //展开/收起节点
+    function openTree(){
+        $table.openAll();
+    }
+    function retractTree(){
+        $table.closeAll();
+    }
+</script>
+</html>

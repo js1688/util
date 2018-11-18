@@ -1,3 +1,25 @@
+        function treeGridClickFun(ts,id,type){//true 将触发展开,false 不触发展开
+            var trs = $(ts).parent().parent().nextAll('.treegrid-parent-'+id);
+            for(var l = 0; l < trs.length; l++){
+            var lcss = $(trs[l]).css('display');
+                if(lcss == 'none' && type){
+                  $(trs[l]).css('display','');
+                }else{
+                  $(trs[l]).css('display','none');
+                  var nodeId = $(trs[l]).attr('nodeId');
+                  var sanjiao = $(trs[l]).find('.treegrid-expander-expanded');
+                  if(sanjiao.length > 0){
+                    $(sanjiao[0]).removeClass('treegrid-expander-expanded',);
+                    $(sanjiao[0]).addClass('treegrid-expander-collapsed');
+                  }
+                  treeGridClickFun(ts,nodeId,false);
+                }
+            }
+            if(type){
+                $(ts).toggleClass('treegrid-expander-collapsed');
+                $(ts).toggleClass('treegrid-expander-expanded');
+            }
+        }
 (function ($) {
     "use strict";
 
@@ -21,7 +43,7 @@
                 nowData[value[options.id]] = value;
             });
             return [result,nowData];
-        };
+        }; 
         //递归获取子节点并且设置子节点
         target.getChildNodes = function (data, parentNode, tbody,index) {
             index++;
@@ -31,7 +53,7 @@
                 $.each(childs, function (i, value) {//循环该节点所以子节点
                     var childNode = data[value];
                     if(childNode){
-                        var tr = $('<tr style="display:none;" name="child"></tr>');
+                        var tr = $('<tr style="display:none;" name="child" nodeId="'+childNode[options.id]+'"></tr>');
                         tr.addClass('treegrid-' + childNode[options.id]);
                         tr.addClass('treegrid-parent-' + parentNode[options.id]);
                         tr.addClass("treegrid-expanded");
@@ -42,19 +64,7 @@
                                     td.append('<span class="treegrid-indent"></span>');
                                 }
                                 if(childNode["child"]){
-                                    td.append('<span class="treegrid-expander treegrid-expander-collapsed" onclick="{' +
-                                            'var trs = $(\'.treegrid-parent-'+childNode[options.id]+'\');' +
-                                            'for(var l = 0; l < trs.length; l++){' +
-                                                'var lcss = $(trs[l]).css(\'display\');'+
-                                                'if(lcss == \'none\'){'+
-                                                    '$(trs[l]).css(\'display\',\'\');'+
-                                                '}else{'+
-                                                    '$(trs[l]).css(\'display\',\'none\');'+
-                                                '}'+
-                                            '}' +
-                                            '$(this).toggleClass(\'treegrid-expander-collapsed\');'+
-                                            '$(this).toggleClass(\'treegrid-expander-expanded\');'+
-                                        '};"></span>');
+                                    td.append('<span class="treegrid-expander treegrid-expander-collapsed" onclick="treeGridClickFun(this,\''+childNode[options.id]+'\',true)"></span>');
                                 }else{
                                     td.append('<span class="treegrid-indent"></span>');
                                 }
@@ -97,19 +107,7 @@
                 for (var j = 0; j < options.columns.length; j++) {
                     var td = $('<td></td>');
                     if(j == 0 && value["child"]){
-                        td.append('<span class="treegrid-expander treegrid-expander-collapsed" onclick="{' +
-                                'var trs = $(\'.treegrid-parent-'+value[options.id]+'\');' +
-                                'for(var l = 0; l < trs.length; l++){' +
-                                    'var lcss = $(trs[l]).css(\'display\');'+
-                                    'if(lcss == \'none\'){'+
-                                        '$(trs[l]).css(\'display\',\'\');'+
-                                    '}else{'+
-                                        '$(trs[l]).css(\'display\',\'none\');'+
-                                    '}'+
-                                '}' +
-                                '$(this).toggleClass(\'treegrid-expander-collapsed\');'+
-                                '$(this).toggleClass(\'treegrid-expander-expanded\');'+
-                            '};"></span>');
+                        td.append('<span class="treegrid-expander treegrid-expander-collapsed" onclick="treeGridClickFun(this,\''+value[options.id]+'\',true)"></span>');
                     }
                     td.append(value[options.columns[j].field]);
                     tr.append(td);
